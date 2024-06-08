@@ -1,30 +1,38 @@
-name: javacv
-on: [push, pull_request, workflow_dispatch]
 env:
   CI_DEPLOY_MODULE: .
+  CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
   CI_DEPLOY_PLATFORM: ${{ github.job }}
   CI_DEPLOY_SETTINGS: ${{ secrets.CI_DEPLOY_SETTINGS }}
   CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-  CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
   STAGING_REPOSITORY: ${{ secrets.STAGING_REPOSITORY }}
 jobs:
   linux-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
-      - uses: bytedeco/javacpp-presets/.github/actions/deploy-ubuntu@actions
-      - uses: mxschmitt/action-tmate@v3.5
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        with:
-          sudo: false
+    - continue-on-error: true
+      uses: bytedeco/javacpp-presets/.github/actions/deploy-ubuntu@actions
+    - continue-on-error: true
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      uses: mxschmitt/action-tmate@v3.5
+      with:
+        sudo: false
   macosx-x86_64:
-    runs-on: macos-11
+    runs-on: self-hosted
     steps:
-      - uses: bytedeco/javacpp-presets/.github/actions/deploy-macosx@actions
-      - uses: mxschmitt/action-tmate@v3.5
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+    - continue-on-error: true
+      uses: bytedeco/javacpp-presets/.github/actions/deploy-macosx@actions
+    - continue-on-error: true
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      uses: mxschmitt/action-tmate@v3.5
   windows-x86_64:
-    runs-on: windows-2019
+    runs-on: self-hosted
     steps:
-      - uses: bytedeco/javacpp-presets/.github/actions/deploy-windows@actions
-      - uses: mxschmitt/action-tmate@v3.5
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+    - continue-on-error: true
+      uses: bytedeco/javacpp-presets/.github/actions/deploy-windows@actions
+    - continue-on-error: true
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      uses: mxschmitt/action-tmate@v3.5
+name: javacv
+on:
+  repository_dispatch:
+    types: trigger-ga___javacv.yml
